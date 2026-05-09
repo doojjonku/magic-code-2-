@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이진법 불빛 카드 게임</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Malgun Gothic", Arial, sans-serif;
+      background: #f7fbff;
+      color: #222;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+    }
+
+    .subtitle {
+      font-size: 19px;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .section {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 26px;
+    }
+
+    .theory {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .theory-card {
+      background: #eef7ff;
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 18px;
+      line-height: 1.5;
+      min-height: 130px;
+    }
+
+    .theory-card strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .target-box {
+      text-align: center;
+      background: #fff8df;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .target-number {
+      display: inline-block;
+      font-size: 44px;
+      color: #ff7a00;
+      margin-left: 8px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .binary-card {
+      border: none;
+      border-radius: 22px;
+      padding: 18px 10px;
+      cursor: pointer;
+      background: #e9eef5;
+      color: #333;
+      box-shadow: 0 6px 0 #cbd3dd;
+      transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
+      min-height: 160px;
+    }
+
+    .binary-card:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #cbd3dd;
+    }
+
+    .binary-card.on {
+      background: #ffe680;
+      box-shadow: 0 6px 0 #f0c93f;
+    }
+
+    .card-value {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .card-status {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .card-binary {
+      font-size: 18px;
+      background: rgba(255, 255, 255, 0.7);
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .sum-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .sum-item {
+      border-radius: 18px;
+      background: #f0fff2;
+      padding: 16px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .sum-item span {
+      display: block;
+      font-size: 34px;
+      margin-top: 6px;
+      color: #168a31;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 22px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      background: #4a90e2;
+      color: white;
+      box-shadow: 0 5px 0 #2d69ad;
+    }
+
+    .btn.secondary {
+      background: #6c757d;
+      box-shadow: 0 5px 0 #4d545a;
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: none;
+    }
+
+    .message {
+      min-height: 44px;
+      margin-top: 18px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .teacher-note {
+      font-size: 18px;
+      line-height: 1.65;
+      background: #f8f8f8;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .theory,
+      .cards,
+      .sum-box {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .binary-card {
+        min-height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>💡 이진법 불빛 카드 게임</h1>
+      <p class="subtitle">컴퓨터는 숫자를 <strong>0</strong>과 <strong>1</strong> 두 가지 약속으로 기억해요.<br />불이 꺼지면 0, 불이 켜지면 1이에요!</p>
+    </header>
+
+    <section class="section">
+      <h2>이진법을 아주 쉽게 설명하면?</h2>
+      <div class="theory">
+        <div class="theory-card">
+          <strong>1. 0과 1만 사용</strong>
+          이진법은 숫자를 쓸 때 0과 1만 사용하는 방법이에요.
+        </div>
+        <div class="theory-card">
+          <strong>2. 꺼짐과 켜짐</strong>
+          컴퓨터는 꺼짐은 0, 켜짐은 1처럼 생각할 수 있어요.
+        </div>
+        <div class="theory-card">
+          <strong>3. 카드를 더해요</strong>
+          8, 4, 2, 1 카드 중 켜진 카드만 더하면 숫자가 돼요.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>게임: 목표 숫자를 만들어 보세요!</h2>
+      <div class="target-box">
+        만들어야 할 숫자 <span class="target-number" id="targetNumber">0</span>
+      </div>
+
+      <div class="cards" id="cards"></div>
+
+      <div class="sum-box">
+        <div class="sum-item">내가 만든 숫자<span id="currentSum">0</span></div>
+        <div class="sum-item">이진법 모양<span id="binaryText">0000</span></div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn" onclick="checkAnswer()">정답 확인</button>
+        <button class="btn secondary" onclick="newQuestion()">새 문제</button>
+        <button class="btn secondary" onclick="resetCards()">다시 하기</button>
+      </div>
+
+      <div class="message" id="message"></div>
+    </section>
+
+    <section class="section">
+      <h2>수업 진행 팁</h2>
+      <div class="teacher-note">
+        먼저 1 카드만 켜서 숫자 1을 만들고, 다음에는 2 카드만 켜서 숫자 2를 만들어 보게 합니다. 이후 2와 1을 같이 켜면 3이 되는 식으로 “켜진 카드만 더한다”는 규칙을 반복하면 저학년도 쉽게 이해할 수 있습니다.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const values = [16, 8, 4, 2, 1];
+    let states = [0, 0, 0, 0, 0];
+    let target = 0;
+
+    const cardsEl = document.getElementById("cards");
+    const targetNumberEl = document.getElementById("targetNumber");
+    const currentSumEl = document.getElementById("currentSum");
+    const binaryTextEl = document.getElementById("binaryText");
+    const messageEl = document.getElementById("message");
+
+    function renderCards() {
+      cardsEl.innerHTML = "";
+
+      values.forEach((value, index) => {
+        const card = document.createElement("button");
+        card.className = "binary-card" + (states[index] ? " on" : "");
+        card.onclick = () => toggleCard(index);
+
+        card.innerHTML = `
+          <div class="card-value">${value}</div>
+          <div class="card-status">${states[index] ? "💡 켜짐" : "⚪ 꺼짐"}</div>
+          <div class="card-binary">${states[index]}</div>
+        `;
+
+        cardsEl.appendChild(card);
+      });
+
+      updateSum();
+    }
+
+    function toggleCard(index) {
+      states[index] = states[index] === 1 ? 0 : 1;
+      messageEl.textContent = "";
+      renderCards();
+    }
+
+    function updateSum() {
+      const sum = states.reduce((total, state, index) => total + state * values[index], 0);
+      const binary = states.join("");
+
+      currentSumEl.textContent = sum;
+      binaryTextEl.textContent = binary;
+    }
+
+    function checkAnswer() {
+      const sum = states.reduce((total, state, index) => total + state * values[index], 0);
+
+      if (sum === target) {
+        messageEl.textContent = "🎉 정답이에요! 아주 잘했어요!";
+        messageEl.style.color = "#168a31";
+      } else {
+        messageEl.textContent = "🙂 조금만 더 생각해 볼까요? 켜진 카드 숫자를 더해 보세요.";
+        messageEl.style.color = "#d96c00";
+      }
+    }
+
+    function resetCards() {
+      states = [0, 0, 0, 0, 0];
+      messageEl.textContent = "";
+      renderCards();
+    }
+
+    function newQuestion() {
+      target = Math.floor(Math.random() * 32);
+      targetNumberEl.textContent = target;
+      resetCards();
+    }
+
+    newQuestion();
+  </script>
+</body>
+</html>
